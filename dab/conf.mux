@@ -1,0 +1,144 @@
+general {
+    dabmode 1
+    nbframes 0
+    syslog false
+    tist false
+    managementport 0
+}
+
+ensemble {
+    id 0x4fff
+    ecc 0xe1
+    local-time-offset auto
+    international-table 1
+    reconfig-counter hash
+    label "Micro DAB"
+    shortlabel "M DAB"
+}
+
+services {
+    srv-01 {
+        id 0xb1c7
+        ecc 0xe2
+        label "RADIO MONACO"
+        shortlabel "MONACO"
+        pty 10
+        language 0x0f
+    }
+    srv-02 {
+        id 0x5e65
+        ecc 0xe0
+        label "DIM SUONO *ROMA*"
+        shortlabel "DS ROMA"
+        pty 10
+        language 0x15
+    }
+    srv-03 {
+        id 0xd3b1
+        ecc 0xe0
+        label "SR 1"
+        shortlabel "SR1"
+        pty 10
+        language 0x08
+    }
+    srv-04 {
+        id 0xc479
+        ecc 0xe1
+        label "Capital London"
+        shortlabel "Capital"
+        pty 10
+        language 0x09
+    }
+}
+
+subchannels {
+    sub-01 {
+        type dabplus
+        bitrate 64
+        id 1
+        protection 3
+        inputproto edi
+        inputuri "tcp://127.0.0.1:9001"
+        buffer-management prebuffering
+        buffer 40
+        prebuffering 20
+    }
+    sub-02 {
+        type dabplus
+        bitrate 64
+        id 2
+        protection 3
+        inputproto edi
+        inputuri "tcp://127.0.0.1:9002"
+        buffer-management prebuffering
+        buffer 40
+        prebuffering 20
+    }
+    sub-03 {
+        type dabplus
+        bitrate 56
+        id 3
+        protection 3
+        inputproto edi
+        inputuri "tcp://127.0.0.1:9003"
+        buffer-management prebuffering
+        buffer 40
+        prebuffering 20
+    }
+    sub-04 {
+        type dabplus
+        bitrate 64
+        id 4
+        protection 3
+        inputproto edi
+        inputuri "tcp://127.0.0.1:9004"
+        buffer-management prebuffering
+        buffer 40
+        prebuffering 20
+    }
+}
+
+components {
+    comp-01 {
+        service srv-01
+        subchannel sub-01
+        user-applications {
+            userapp "slideshow"
+        }
+    }
+    comp-02 {
+        service srv-02
+        subchannel sub-02
+        user-applications {
+            userapp "slideshow"
+        }
+    }
+    comp-03 {
+        service srv-03
+        subchannel sub-03
+        user-applications {
+            userapp "slideshow"
+        }
+    }
+    comp-04 {
+        service srv-04
+        subchannel sub-04
+        user-applications {
+            userapp "slideshow"
+        }
+    }
+}
+
+outputs {
+    edi {
+        destinations {
+            edi_tcp {
+                protocol tcp
+                listenport 9201
+            }
+        }
+    }
+
+    ; Throttle output to real-time (one ETI frame every 24ms)
+    throttle "simul://"
+}
