@@ -58,7 +58,7 @@ popd
 # Install mmb-tools: modulator
 git clone https://github.com/Opendigitalradio/ODR-DabMod.git
 pushd ODR-DabMod
-sudo apt install -y libfftw3-dev libsoapysdr-dev soapysdr-module-hackrf
+sudo apt install -y libfftw3-dev libsoapysdr-dev
 ./bootstrap.sh
 ./configure CFLAGS="-O3 -DNDEBUG" CXXFLAGS="-O3 -DNDEBUG" --enable-fast-math --with-boost-libdir=/usr/lib/arm-linux-gnueabihf --disable-output-uhd --disable-zeromq
 make
