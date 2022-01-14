@@ -2,6 +2,7 @@
 - [Introduction](#introduction)
 - [Manual setup](#manual-setup)
 - [Operations](#operations)
+- [Configuration](#configuration)
 
 # Introduction
 The goal of the rpi-dab-tx project is to run a [Digital Audio Broadcasting](https://en.wikipedia.org/wiki/Digital_Audio_Broadcasting), [software-defined-radio](https://en.wikipedia.org/wiki/Software-defined_radio) transmitter on a [raspberry-pi](https://www.raspberrypi.com/) device. For this, you will need:
@@ -53,3 +54,39 @@ You can use the web browser on your computer to start and stop each components o
 - There is no required order for starting the components, although I advise to start the modulator and the multiplexer first. You can wait until the SDR transceiver card is broadcasting the DAB ensemble
 - You can monitor each component output by clicking on the component action **Tail -f stadout** or **Tail -f stderr**
 - To stop all services, I recommend that you do not use the **STOP ALL** button but that you stop each component separately, with the exception of the **modulator** component that should stop by itself, when it detects that the multiplexer is down
+
+# Configuration
+
+## Supervisor web access
+If you want to change the default user profile and/or user password authorized to access the web interface of supervisor, then apply the following commands:
+```
+sudo sed -e 's/^username = odr/^username = new_profile/' -i /etc/supervisor/supervisord.conf
+sudo sed -e 's/^password = odr/^password = new_password/' -i /etc/supervisor/supervisord.conf
+```
+
+## Change the transmission channel
+If channel 5A is being used in your area, you can easily switch to a [new transmission channel](http://www.wohnort.org/DAB/freqs.html) by applying the following command:
+```
+sed -e 's/^channel=5A/^channel=a_free_channel_in_your_area/' -i $HOME/dab/mod.ini
+```
+
+## Change the name of the multiplex
+The default name of the multilex is **Micro DAB**. 
+
+If you want to change the name of the multiplex, then change the label and shortlabel values within the **ensemble** section in file $HOME/dab/mod.ini
+
+## Change one or several radio stations
+Naturally, you can change any of the 4 radio stations that are configured in this project. Here are the steps you need to follow for each station:
+
+1. Decide wich service you want to modify (srv-01 through srv-04) and modify all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf) 
+2. Indicate the new audio stream to use in the corresponding file $HOME/dab/supervisor/P0x.conf (modify the line starting with command=odr-audioenc). If the new stream does not carry any information regarding the artist/song being played, then remove option **-w INFO.dls**
+3. Change the radio station slogan in the corresponding file $HOME/dab/mot/P0x/INFO.txt
+4. Replace the existing radio station logo with the new one in directory $HOME/dab/mot/P0x/slide
+
+## Change the SOAPYSDR-compatible device
+This project is configured for the HackRF One SDR transceiver card.
+
+If you want to use another card, like the LimeSDR, then apply the following command:
+```
+sed -e 's/^device=driver=hackrf/^device=driver=lime/' -i $HOME/dab/mod.ini
+```
