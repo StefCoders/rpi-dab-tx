@@ -27,7 +27,7 @@ This project was designed with the model 3B of the raspberry pi in mind. Later m
 ## Software installation steps
 1. Clone this repository
 ```
-apt update
+sudo apt update
 sudo apt install -y git
 cd
 git clone https://github.com/colisee/rpi-dab-tx.git
