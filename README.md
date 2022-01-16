@@ -85,9 +85,10 @@ Naturally, you can change any of the 4 radio stations that are configured in thi
 1. You can use the excellent [radio browser directory](https://www.radio-browser.info) to identify the url of the radio audio stream
 1. Test the radio audio stream url with vlc on your computer (not the raspberry) and check the bit rate
 1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 through srv-04) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf) 
-1. Indicate the new audio stream to use in the corresponding file $HOME/dab/supervisor/P0x.conf (modify the line starting with **--vlc-uri=**). If the bit rate is lower than 64 Kbps, then modify the line starting with **--bitrate=**
-1. Change the radio station slogan in the corresponding file $HOME/dab/mot/P0x/INFO.txt
-1. Replace the existing radio station logo with the new one in directory $HOME/dab/mot/P0x/slide
+1. Indicate the new audio stream to use in the corresponding file $HOME/dab/supervisor/P0x.conf (modify the line starting with **--vlc-uri=**). 
+2. If the bit rate is lower than 64 Kbps, then modify the line starting with **--bitrate=** in the corresponding $HOME/dab/supervisor/P0x.conf file and modify the line containing the keyword **bitrate** in the corresponding subchannel srv-0x in file $HOME/dab/conf.mux
+3. Change the radio station slogan in the corresponding file $HOME/dab/mot/P0x/INFO.txt
+4. Replace the existing radio station logo with the new one in directory $HOME/dab/mot/P0x/slide
 
 ## Change the SOAPYSDR-compatible device
 This project is configured for the HackRF One SDR transceiver card.
