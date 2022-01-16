@@ -19,13 +19,17 @@ This project was designed with the model 3B of the raspberry pi in mind. Later m
 
 ## Operating system installation Steps
 1. Download [rpi-imager](https://www.raspberrypi.com/software/) onto your computer (Windows, MacOS or linux). This software will allow you initialize the SD-card with the operating system
-2. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit)". Then, click on "Choose storage" and select your SD-card device. Finally, click on "write" and follow the instructions
-3. If you plan to access your raspberry pi remotely through ssh, then create an empty file called "ssh" inside the boot partition, using your computer's file manager
-4. Remove the SD-card from your computer and insert it into your raspberry pi. Then switch it on
-5. Log into the raspberry pi (user profile is **pi** and user password is **raspberry**)
-6. Once logged in, I strongly suggest you change the password with the command **passwd**
+1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit)". Then, click on "Choose storage" and select your SD-card device. Finally, click on "write" and follow the instructions
+1. If you plan to access your raspberry pi remotely through ssh, then create an empty file called "ssh" inside the boot partition, using your computer's file manager
+1. Remove the SD-card from your computer and insert it into your raspberry pi. Then switch it on
+1. Log into the raspberry pi (user profile is **pi** and user password is **raspberry**)
+1. Once logged in, I strongly suggest you change the password with the command **passwd**
 
 ## Software installation steps
+1. Set the proper timezone on the raspberry. You can identify the timezone values with the command **timedatectl list-timezones**
+```
+sudo timedatectl set-timezone your_timezone
+```
 1. Clone this repository
 ```
 sudo apt update
@@ -33,7 +37,7 @@ sudo apt install -y git
 cd
 git clone https://github.com/colisee/rpi-dab-tx.git
 ```
-2. Run the installation script:
+1. Run the installation script:
 ```
 bash rpi-dab-tx/install.sh
 ```
@@ -78,10 +82,12 @@ If you want to change the name of the multiplex, then change the label and short
 ## Change one or several radio stations
 Naturally, you can change any of the 4 radio stations that are configured in this project. Here are the steps you need to follow for each station:
 
-1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 through srv-04) and modify all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf) 
-2. Indicate the new audio stream to use in the corresponding file $HOME/dab/supervisor/P0x.conf (modify the line starting with command=odr-audioenc). If the new stream does not carry any information regarding the artist/song being played, then remove option **-w INFO.dls**
-3. Change the radio station slogan in the corresponding file $HOME/dab/mot/P0x/INFO.txt
-4. Replace the existing radio station logo with the new one in directory $HOME/dab/mot/P0x/slide
+1. You can use the excellent [radio browser directory](https://www.radio-browser.info) to identify the url of the radio audio stream
+1. Test the radio audio stream url with vlc on your computer (not the raspberry) and check the bit rate
+1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 through srv-04) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf) 
+1. Indicate the new audio stream to use in the corresponding file $HOME/dab/supervisor/P0x.conf (modify the line starting with **--vlc-uri=**). If the bit rate is lower than 64 Kbps, then modify the line starting with **--bitrate=**
+1. Change the radio station slogan in the corresponding file $HOME/dab/mot/P0x/INFO.txt
+1. Replace the existing radio station logo with the new one in directory $HOME/dab/mot/P0x/slide
 
 ## Change the SOAPYSDR-compatible device
 This project is configured for the HackRF One SDR transceiver card.
