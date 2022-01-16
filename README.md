@@ -30,14 +30,14 @@ This project was designed with the model 3B of the raspberry pi in mind. Later m
 ```
 sudo timedatectl set-timezone your_timezone
 ```
-1. Clone this repository
+2. Clone this repository
 ```
 sudo apt update
 sudo apt install -y git
 cd
 git clone https://github.com/colisee/rpi-dab-tx.git
 ```
-1. Run the installation script:
+3. Run the installation script:
 ```
 bash rpi-dab-tx/install.sh
 ```
@@ -56,7 +56,7 @@ You can use the web browser on your computer to start and stop each components o
 - To start all the services at once, click on the button **RESTART ALL**
 - To start selected components, click on the component **start** action link
 - There is no required order for starting the components, although I advise to start the modulator and the multiplexer first. You can wait until the SDR transceiver card is broadcasting the DAB ensemble
-- You can monitor each component output by clicking on the component action **Tail -f stadout** or **Tail -f stderr**
+- You can monitor each component output by clicking on the component action **Tail -f stdout** or **Tail -f stderr**
 - To stop all services, I recommend that you do not use the **STOP ALL** button but that you stop each component separately, with the exception of the **modulator** component that should stop by itself, when it detects that the multiplexer is down
 
 # Configuration
