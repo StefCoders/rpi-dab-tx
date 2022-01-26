@@ -52,7 +52,7 @@ sudo make install
 popd # back to ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: dab multiplexer
-sudo apt install -y libboost-system-dev libcurl4-openssl-dev
+sudo apt install -y libboost-system-dev libcurl4-openssl-dev python3-zmq
 if [ ! -d ODR-DabMux ]; then
   git clone https://github.com/Opendigitalradio/ODR-DabMux.git
 fi
