@@ -12,7 +12,7 @@ The goal of the rpi-dab-tx project is to run a [Digital Audio Broadcasting](http
 This project:
 - Uses the [odr-mmbtools](https://www.opendigitalradio.org/mmbtools) software stack developed by the [Open Digital Radio](https://www.opendigitalradio.org/) non-profit association
 - Uses the [soapy-sdr](https://github.com/pothosware/SoapySDR/wiki) library
-- Provides sample configutation files that will allow you to broadcast a multiplex with 4 radio stations ([Radio Monaco](https://radio-monaco.com), [Dimensione Suono Roma](https://www.dimensionesuonoroma.it/), and [Capital FM London](https://www.capitalfm.com/london/)). You can naturally change the content of these files to suit your needs.
+- Provides sample configuration files that will allow you to broadcast a multiplex with 3 radio stations ([Radio Monaco](https://radio-monaco.com), [Dimensione Suono Roma](https://www.dimensionesuonoroma.it/), and [Capital FM London](https://www.capitalfm.com/london/)). You can naturally change the content of these files to suit your needs. 
 
 # Manual setup
 This project was designed with the model 3B of the raspberry pi in mind. Later models (and in particular, version 4) are more powerful and are likely to feature more radio stations within a multiplex. Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the raspberry pi with a clean Raspi OS Lite system.
@@ -55,9 +55,9 @@ You can use the web browser on your computer to start and stop each components o
 ## Running the DAB service
 - To start all the services at once, click on the button **RESTART ALL**
 - To start selected components, click on the component **start** action link
-- There is no required order for starting the components, although I advise to start the modulator and the multiplexer first. You can wait until the SDR transceiver card is broadcasting the DAB ensemble
+- There is no required order for starting the components, although I advise to start the multiplexer first, then the modulator. Once the SDR transceiver card is broadcasting the DAB ensemble, you can start the other jobs
 - You can monitor each component output by clicking on the component action **Tail -f stdout** or **Tail -f stderr**
-- To stop all services, I recommend that you do not use the **STOP ALL** button but that you stop each component separately, with the exception of the **modulator** component that should stop by itself, when it detects that the multiplexer is down
+- To stop all services, I recommend that you do not use the **STOP ALL** button but that you stop the multiplexer first (this will trigger a clean stop of the modulator). Once the modulator is off, you can use use the **STOP ALL** button to close the remaining jobs.
 
 # Configuration
 
@@ -68,33 +68,33 @@ sudo sed -e 's/^username = odr/^username = new_profile/' -i /etc/supervisor/supe
 sudo sed -e 's/^password = odr/^password = new_password/' -i /etc/supervisor/supervisord.conf
 ```
 
-## Change the transmission channel
-If channel 5A is being used in your area, you can easily switch to a [new transmission channel](http://www.wohnort.org/DAB/freqs.html) by applying the following command:
-```
-sed -e 's/^channel=5A/^channel=a_free_channel_in_your_area/' -i $HOME/dab/mod.ini
-```
-
-## Change the name of the multiplex
+## Multiplex
+### Change the name of the multiplex
 The default name of the multilex is **Micro DAB**. 
 
 If you want to change the name of the multiplex, then change the label and shortlabel values within the **ensemble** section in file $HOME/dab/mod.ini
 
-## Change one or several radio stations
-Naturally, you can change any of the 4 radio stations that are configured in this project. Here are the steps you need to follow for each station:
+## Modulator
+### Change the transmission channel
+If channel 5A is being used in your area, you can easily switch to a [new transmission channel](http://www.wohnort.org/DAB/freqs.html) by applying the following command: `sed -e 's/^channel=5A/^channel=a_free_channel_in_your_area/' -i $HOME/dab/mod.ini`
 
-1. You can use the excellent [radio browser directory](https://www.radio-browser.info) to identify the url of the radio audio stream
-1. Test the radio audio stream url with vlc on your computer (not the raspberry) and check the bit rate
-1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 through srv-04) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf) 
-1. Indicate the new audio stream to use in the corresponding file $HOME/dab/supervisor/P0x.conf (modify the line starting with **--vlc-uri=**). 
-2. If the bit rate is lower than 64 Kbps, then modify the line starting with **--bitrate=** in the corresponding $HOME/dab/supervisor/P0x.conf file and modify the line containing the keyword **bitrate** in the corresponding subchannel srv-0x in file $HOME/dab/conf.mux
-3. Change the radio station slogan in the corresponding file $HOME/dab/mot/P0x/INFO.txt
-4. Replace the existing radio station logo with the new one in directory $HOME/dab/mot/P0x/slide
-
-## Change the SOAPYSDR-compatible device
+### Change the SOAPYSDR-compatible device
 This project is configured for the HackRF One SDR transceiver card.
 
 If you are using another SoapySDR-compatible transceiver card, then apply one of the following commands:
 - LimeSDR: `sed -e 's/^device=driver=hackrf/^device=driver=lime/' -i $HOME/dab/mod.ini`
 - PlutoSDR: `sed -e 's/^device=driver=hackrf/^device=driver=plutosdr/' -i $HOME/dab/mod.ini`
 
-Also, check your documentation to set the proper values for other SoapySDR fields, like txgain.
+Also, check your documentation to set the proper values for other SoapySDR fields, like **txgain**.
+
+## Other
+### Change one or several radio stations
+Naturally, you can change any of the 3 radio stations that are configured in this project. Here are the steps you need to follow for each station:
+
+1. You can use the excellent [radio browser directory](https://www.radio-browser.info) to identify the url of the radio audio stream
+1. Test the radio audio stream url with vlc on your computer (not the raspberry) and check the bit rate
+1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 through srv-03) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf) 
+1. Indicate the new audio stream to use in the corresponding file $HOME/dab/supervisor/P0x.conf (modify the line starting with **--vlc-uri=**). 
+2. If the bit rate is lower than 64 Kbps, then modify the line starting with **--bitrate=** in the corresponding $HOME/dab/supervisor/P0x.conf file and modify the line containing the keyword **bitrate** in the corresponding subchannel srv-0x in file $HOME/dab/conf.mux
+3. Change the radio station slogan in the corresponding file $HOME/dab/mot/P0x/INFO.txt
+4. Replace the existing radio station logo with the new one in directory $HOME/dab/mot/P0x/slide
