@@ -51,7 +51,7 @@ services {
 subchannels {
     sub-01 {
         type dabplus
-        bitrate 64
+        bitrate 128
         id 1
         protection 3
         inputproto edi
@@ -62,7 +62,7 @@ subchannels {
     }
     sub-02 {
         type dabplus
-        bitrate 64
+        bitrate 128
         id 2
         protection 3
         inputproto edi
@@ -73,7 +73,7 @@ subchannels {
     }
     sub-03 {
         type dabplus
-        bitrate 64
+        bitrate 128
         id 4
         protection 3
         inputproto edi
