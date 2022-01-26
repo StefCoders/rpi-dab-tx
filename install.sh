@@ -22,12 +22,16 @@ sudo apt install -y build-essential automake libtool
 pushd ${HOME}
 
 # Create the folder containing the ODR tools
-mkdir ${HOME}/ODR-mmbTools
+if [ ! -d ODR-mmbTools ]; then
+  mkdir ${HOME}/ODR-mmbTools
+fi
 pushd ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: audio encoder
 sudo apt install -y libzmq3-dev libzmq5 libvlc-dev vlc-data vlc-plugin-base libcurl4-openssl-dev
-git clone https://github.com/Opendigitalradio/ODR-AudioEnc.git
+if [ ! -d ODR-AudioEnc ]; then
+  git clone https://github.com/Opendigitalradio/ODR-AudioEnc.git
+fi
 pushd ODR-AudioEnc
 ./bootstrap
 ./configure --enable-vlc
@@ -37,7 +41,9 @@ popd # back to ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: PAD encoder
 sudo apt install -y libmagickwand-dev
-git clone https://github.com/Opendigitalradio/ODR-PadEnc.git
+if [ ! -d ODR-PadEnc ]; then
+  git clone https://github.com/Opendigitalradio/ODR-PadEnc.git
+fi
 pushd ODR-PadEnc
 ./bootstrap
 ./configure
@@ -47,7 +53,9 @@ popd # back to ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: dab multiplexer
 sudo apt install -y libboost-system-dev libcurl4-openssl-dev
-git clone https://github.com/Opendigitalradio/ODR-DabMux.git
+if [ ! -d ODR-DabMux ]; then
+  git clone https://github.com/Opendigitalradio/ODR-DabMux.git
+fi
 pushd ODR-DabMux
 ./bootstrap.sh
 ## Temporary, until ODR-DabMux configure is modified
@@ -63,7 +71,9 @@ popd # back to ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: modulator
 sudo apt install -y libfftw3-dev libsoapysdr-dev
-git clone https://github.com/Opendigitalradio/ODR-DabMod.git
+if [ ! -d ODR-DabMod ]; then
+  git clone https://github.com/Opendigitalradio/ODR-DabMod.git
+fi
 pushd ODR-DabMod
 ./bootstrap.sh
 ./configure CFLAGS="-O3 -DNDEBUG" CXXFLAGS="-O3 -DNDEBUG" --enable-fast-math --disable-output-uhd --disable-zeromq
@@ -74,9 +84,10 @@ popd # back to ${HOME}/ODR-mmbTools
 popd # back to ${HOME}
 
 # Copy the configuration files
-if [ ! -d ${HOME}/dab ]; then
-  cp -r $(realpath $(dirname $0))/dab ${HOME}
+if [ -d dab ]; then
+  rm -r dab
 fi
+cp -r $(realpath $(dirname $0))/dab ${HOME}
 
 # Adapt the home directory in the supervisor configuration files
 sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/LF.conf
@@ -93,6 +104,7 @@ username = odr ; Auth username
 password = odr ; Auth password
 EOF
 fi
+sudo rm /etc/supervisor/conf.d/*
 sudo ln -s $HOME/dab/supervisor/*.conf /etc/supervisor/conf.d/
 sudo supervisorctl reread
 sudo supervisorctl reload
