@@ -3,7 +3,12 @@ general {
     nbframes 0
     syslog false
     tist false
-    managementport 0
+    managementport 12720
+}
+
+remotecontrol {
+    telnetport 12721
+    zmqendpoint tcp://lo:12722
 }
 
 ensemble {

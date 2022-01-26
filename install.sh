@@ -93,6 +93,9 @@ cp -r $(realpath $(dirname $0))/dab ${HOME}
 sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/LF.conf
 sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/HF.conf
 
+# Adapt the host for odr-dabmux-gui
+sed -e "s;--host=raspberrypi.local;$(hostname -I | awk '{print $1}')" -i ${HOME}/dab/supervisor/HF.conf
+
 # Install the supervisor tool
 sudo apt install -y supervisor
 if [ ! $(grep inet_http_server /etc/supervisor/supervisord.conf) ]; then

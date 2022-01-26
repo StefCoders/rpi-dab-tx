@@ -69,6 +69,8 @@ sudo sed -e 's/^password = odr/^password = new_password/' -i /etc/supervisor/sup
 ```
 
 ## Multiplex
+If you start the job **02-Multiplex-Manager**, then you can view some of the multiplex settings on your web browser at the following url: `http://raspberrypi.local:8002`
+
 ### Change the name of the multiplex
 The default name of the multilex is **Micro DAB**. 
 
