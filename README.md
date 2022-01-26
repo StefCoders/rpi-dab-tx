@@ -12,7 +12,7 @@ The goal of the rpi-dab-tx project is to run a [Digital Audio Broadcasting](http
 This project:
 - Uses the [odr-mmbtools](https://www.opendigitalradio.org/mmbtools) software stack developed by the [Open Digital Radio](https://www.opendigitalradio.org/) non-profit association
 - Uses the [soapy-sdr](https://github.com/pothosware/SoapySDR/wiki) library
-- Provides sample configutation files that will allow you to broadcast a multiplex with 4 radio stations ([Radio Monaco](https://radio-monaco.com), [Dimensione Suono Roma](https://www.dimensionesuonoroma.it/), [SR 1](https://www.sr.de/sr/sr1/index.html) and [Capital FM London](https://www.capitalfm.com/london/)). You can naturally change the content of these files to suit your needs.
+- Provides sample configutation files that will allow you to broadcast a multiplex with 4 radio stations ([Radio Monaco](https://radio-monaco.com), [Dimensione Suono Roma](https://www.dimensionesuonoroma.it/), and [Capital FM London](https://www.capitalfm.com/london/)). You can naturally change the content of these files to suit your needs.
 
 # Manual setup
 This project was designed with the model 3B of the raspberry pi in mind. Later models (and in particular, version 4) are more powerful and are likely to feature more radio stations within a multiplex. Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the raspberry pi with a clean Raspi OS Lite system.
@@ -93,7 +93,8 @@ Naturally, you can change any of the 4 radio stations that are configured in thi
 ## Change the SOAPYSDR-compatible device
 This project is configured for the HackRF One SDR transceiver card.
 
-If you want to use another card, like the LimeSDR, then apply the following command:
-```
-sed -e 's/^device=driver=hackrf/^device=driver=lime/' -i $HOME/dab/mod.ini
-```
+If you are using another SoapySDR-compatible transceiver card, then apply one of the following commands:
+- LimeSDR: `sed -e 's/^device=driver=hackrf/^device=driver=lime/' -i $HOME/dab/mod.ini`
+- PlutoSDR: `sed -e 's/^device=driver=hackrf/^device=driver=plutosdr/' -i $HOME/dab/mod.ini`
+
+Also, check your documentation to set the proper values for other SoapySDR fields, like txgain.
