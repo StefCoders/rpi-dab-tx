@@ -94,7 +94,7 @@ sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/LF.conf
 sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/HF.conf
 
 # Adapt the host for odr-dabmux-gui
-sed -e "s;--host=raspberrypi.local;$(hostname -I | awk '{print $1}')" -i ${HOME}/dab/supervisor/HF.conf
+sed -e "s;--host=raspberrypi.local;--host=$(hostname -I | awk '{print $1}');" -i ${HOME}/dab/supervisor/HF.conf
 
 # Install the supervisor tool
 sudo apt install -y supervisor
