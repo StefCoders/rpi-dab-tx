@@ -32,7 +32,7 @@ Since some software components, like the modulator, are CPU-intensive, it is pre
 1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) on your physical host (WIndows, MacOs, non-debian Linux, \*BSD\*)
 1. Install [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) on your physical host
 1. Install [Vagrant](https://www.vagrantup.com/) on your physical host
-1. Open a command shell on your physical host
+1. Open a command prompt on your physical host
 1. Create and/or start the Debian virtual session: `vagrant up`
 1. Log into the Debian virtual session: `vagrant ssh`
 1. Update the Debian system by running: `sudo apt update; sudo apt upgrade -y`
