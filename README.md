@@ -15,9 +15,12 @@ This project:
 - Provides sample configuration files that will allow you to broadcast a multiplex with 3 radio stations ([Radio Monaco](https://radio-monaco.com), [Dimensione Suono Roma](https://www.dimensionesuonoroma.it/), and [Capital FM London](https://www.capitalfm.com/london/)). You can naturally change the content of these files to suit your needs. 
 
 # Manual setup
-This project was designed with the model 3B of the raspberry pi in mind. Later models (and in particular, version 4) are more powerful and are likely to feature more radio stations within a multiplex. Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the raspberry pi with a clean Raspi OS Lite system.
+This project was initially designed with the model 3B of the Raspberry pi. As of version 1.2.0, it can also run on a virtual Debian system.
 
-## Operating system installation Steps
+## Setting the Operating system up
+Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the raspberry pi with a clean Raspi OS Lite system.
+
+### Raspberry PI
 1. Download [rpi-imager](https://www.raspberrypi.com/software/) onto your computer (Windows, MacOS or linux). This software will allow you initialize the SD-card with the operating system
 1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit)". Then, click on "Choose storage" and select your SD-card device. Finally, click on "write" and follow the instructions
 1. If you plan to access your raspberry pi remotely through ssh, then create an empty file called "ssh" inside the boot partition, using your computer's file manager
@@ -25,7 +28,22 @@ This project was designed with the model 3B of the raspberry pi in mind. Later m
 1. Log into the raspberry pi (user profile is **pi** and user password is **raspberry**)
 1. Once logged in, I strongly suggest you change the password with the command **passwd**
 
-## Software installation steps
+### Virtual Debian device
+1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) on your physical host (WIndows, MacOs, non-debian Linux, \*BSD\*)
+1. Install [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) on your physical host
+1. Install [Vagrant](https://www.vagrantup.com/) on your physical host
+1. Open a command shell on your physical host
+1. Create and/or start the Debian virtual session: `vagrant up`
+1. Log into the Debian virtual session: `vagrant ssh`
+1. Update the Debian system by running: `sudo apt update; sudo apt upgrade -y`
+1. Exit the virtual session: `exit`
+1. Stop the virtual session: `vagrant halt`
+1. Connect the SoapySDR-compatible transceiver card to the host system
+1. Add a USB filter to your VirtualBox session (named **dab_tx**) for your SoapySDR card
+1. Restart the virtual session: `vagrant up`
+1. Login again into your virtual session: `vagrant ssh`
+
+## Setting the odr-mmbTools software up
 1. Set the proper timezone on the raspberry. You can identify the timezone values with the command **timedatectl list-timezones**
 ```
 sudo timedatectl set-timezone your_timezone
