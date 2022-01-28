@@ -18,7 +18,7 @@ This project:
 This project was initially designed with the model 3B of the Raspberry pi. As of version 1.2.0, it can also run on a virtual Debian system.
 
 ## Setting the Operating system up
-Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the raspberry pi with a clean Raspi OS Lite system.
+Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the system with a clean lite Debian system.
 
 ### Raspberry PI
 1. Download [rpi-imager](https://www.raspberrypi.com/software/) onto your computer (Windows, MacOS or linux). This software will allow you initialize the SD-card with the operating system
