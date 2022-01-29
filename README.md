@@ -15,29 +15,49 @@ This project:
 - Provides sample configuration files that will allow you to broadcast a multiplex with 3 radio stations ([Radio Monaco](https://radio-monaco.com), [Dimensione Suono Roma](https://www.dimensionesuonoroma.it/), and [Capital FM London](https://www.capitalfm.com/london/)). You can naturally change the content of these files to suit your needs. 
 
 # Manual setup
-This project was designed with the model 3B of the raspberry pi in mind. Later models (and in particular, version 4) are more powerful and are likely to feature more radio stations within a multiplex. Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the raspberry pi with a clean Raspi OS Lite system.
+This project was initially designed with the model 3B of the Raspberry pi. As of version 1.2.0, it can also run on a virtual Debian system.
 
-## Operating system installation Steps
+## Setting the Operating system up
+Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the system with a clean lite Debian system.
+
+### Raspberry PI
 1. Download [rpi-imager](https://www.raspberrypi.com/software/) onto your computer (Windows, MacOS or linux). This software will allow you initialize the SD-card with the operating system
 1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit)". Then, click on "Choose storage" and select your SD-card device. Finally, click on "write" and follow the instructions
 1. If you plan to access your raspberry pi remotely through ssh, then create an empty file called "ssh" inside the boot partition, using your computer's file manager
 1. Remove the SD-card from your computer and insert it into your raspberry pi. Then switch it on
 1. Log into the raspberry pi (user profile is **pi** and user password is **raspberry**)
-1. Once logged in, I strongly suggest you change the password with the command **passwd**
 
-## Software installation steps
-1. Set the proper timezone on the raspberry. You can identify the timezone values with the command **timedatectl list-timezones**
+### Virtual Debian device
+1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) on your physical host (WIndows, MacOs, non-debian Linux, \*BSD\*)
+1. Install [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) on your physical host
+1. Install [Vagrant](https://www.vagrantup.com/) on your physical host
+1. Start Virtualbox
+1. Open a command prompt on your physical host
+1. Copy the Vagrantfile from this repository
+1. Create and start the Debian virtual session: `vagrant up`
+1. Log into the Debian virtual session as profile **vagrant**. You won't need a password (which is **vagrant**) : `vagrant ssh`
+1. Update the Debian system by running: `sudo apt update; sudo apt upgrade -y`
+1. Log off and quit the virtual session: `exit`
+1. Stop the virtual session: `vagrant halt`
+1. Connect the SoapySDR-compatible transceiver card to the host system
+1. Add a USB filter to your VirtualBox session (named **dab_tx**) for your SoapySDR card
+1. Restart the virtual session: `vagrant up`
+1. Login again into your virtual session: `vagrant ssh`
+
+## Setting the odr-mmbTools software up
+1. I strongly suggest you change the password with the command **passwd**
+2. Set the proper timezone on the raspberry. You can identify the timezone values with the command **timedatectl list-timezones**
 ```
 sudo timedatectl set-timezone your_timezone
 ```
-2. Clone this repository
+3. Clone this repository
 ```
 sudo apt update
 sudo apt install -y git
 cd
 git clone https://github.com/colisee/rpi-dab-tx.git
 ```
-3. Run the installation script:
+4. Run the installation script:
 ```
 bash rpi-dab-tx/install.sh
 ```
@@ -96,6 +116,6 @@ Naturally, you can change any of the 3 radio stations that are configured in thi
 1. Test the radio audio stream url with vlc on your computer (not the raspberry) and check the bit rate
 1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 through srv-03) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf) 
 1. Indicate the new audio stream to use in the corresponding file $HOME/dab/supervisor/LF.conf (modify the line starting with **--vlc-uri=**). 
-2. If the bit rate is lower than 64 Kbps, then modify the line starting with **--bitrate=** in the corresponding $HOME/dab/supervisor/LF.conf file and modify the line containing the keyword **bitrate** in the corresponding subchannel srv-0x in file $HOME/dab/conf.mux
+2. If the bit rate is lower than 128 Kbps, then modify the line starting with **--bitrate=** in the corresponding $HOME/dab/supervisor/LF.conf file and modify the line containing the keyword **bitrate** in the corresponding subchannel srv-0x in file $HOME/dab/conf.mux
 3. Change the radio station slogan in the corresponding file $HOME/dab/mot/P0x/INFO.txt
 4. Replace the existing radio station logo with the new one in directory $HOME/dab/mot/P0x/slide

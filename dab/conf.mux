@@ -28,6 +28,7 @@ services {
         label "RADIO MONACO"
         shortlabel "MONACO"
         pty 10
+        pty-sd static
         language 0x0f
     }
     srv-02 {
@@ -36,6 +37,7 @@ services {
         label "DIM SUONO *ROMA*"
         shortlabel "DS ROMA"
         pty 10
+        pty-sd static
         language 0x15
     }
     srv-03 {
@@ -44,6 +46,7 @@ services {
         label "Capital London"
         shortlabel "Capital"
         pty 10
+        pty-sd static
         language 0x09
     }
 }
