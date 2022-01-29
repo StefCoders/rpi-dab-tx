@@ -96,8 +96,10 @@ sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/HF.conf
 # Adapt the host for odr-dabmux-gui
 sed -e "s;--host=raspberrypi.local;--host=$(hostname -I | awk '{print $1}');" -i ${HOME}/dab/supervisor/HF.conf
 
-# Install the supervisor tool
+# Install the supervisor package
 sudo apt install -y supervisor
+
+# Congigure the http server for supervisor
 if [ ! $(grep inet_http_server /etc/supervisor/supervisord.conf) ]; then
   cat << EOF | sudo tee -a /etc/supervisor/supervisord.conf > /dev/null
 
@@ -107,8 +109,14 @@ username = odr ; Auth username
 password = odr ; Auth password
 EOF
 fi
-sudo rm /etc/supervisor/conf.d/*
+
+# Setup the configuration files for supervisor
+if [ $(ls /etc/supervisor/conf.d | wc -l) > 0 ]; then
+  sudo rm /etc/supervisor/conf.d/*
+fi
 sudo ln -s $HOME/dab/supervisor/*.conf /etc/supervisor/conf.d/
+
+# Restart supervisor
 sudo supervisorctl reread
 sudo supervisorctl reload
 
