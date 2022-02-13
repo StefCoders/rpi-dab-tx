@@ -59,7 +59,9 @@ git clone https://github.com/colisee/rpi-dab-tx.git
 ```
 4. (Optional) Switch to the dev branch if you want to test the latest features (but expect possible bugs)
 ```
+pushd rpi-dab-tx
 git checkout dev
+popd
 ```
 
 5. Run the installation script:
