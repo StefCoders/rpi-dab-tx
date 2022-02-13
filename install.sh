@@ -81,6 +81,34 @@ make
 sudo make install
 popd # back to ${HOME}/ODR-mmbTools
 
+# Install mmb-tools: fdk-aac
+if [ ! -d fdk-aac ]; then
+  git clone https://github.com/Opendigitalradio/fdk-aac.git
+fi
+pushd fdk-aac
+./bootstrap
+./configure
+make
+sudo make install
+popd # back to ${HOME}/ODR-mmbTools
+
+# Install mmb-tools: source companion
+if [ ! -d ODR-SourceCompanion ]; then
+  git clone https://github.com/Opendigitalradio/ODR-SourceCompanion.git
+fi
+pushd ODR-SourceCompanion
+./bootstrap
+./configure
+make
+sudo make install
+popd # back to ${HOME}/ODR-mmbTools
+
+# Install mmb-tools: encoder manager
+sudo apt install -y python3-cherrypy3 python3-jinja2 python3-serial python3-yaml supervisor python3-pysnmp4
+if [ ! -d ODR-EncoderManager ]; then
+  git clone https://github.com/Opendigitalradio/ODR-EncoderManager.git
+fi
+
 popd # back to ${HOME}
 
 # Copy the configuration files
@@ -90,11 +118,10 @@ fi
 cp -r $(realpath $(dirname $0))/dab ${HOME}
 
 # Adapt the home directory in the supervisor configuration files
-sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/LF.conf
-sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/HF.conf
+sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/*.conf
 
 # Adapt the host for odr-dabmux-gui
-sed -e "s;--host=raspberrypi.local;--host=$(hostname -I | awk '{print $1}');" -i ${HOME}/dab/supervisor/HF.conf
+sed -e "s;--host=raspberrypi.local;--host=$(hostname -I | awk '{print $1}');" -i ${HOME}/dab/supervisor/ODR-misc.conf
 
 # Install the supervisor package
 sudo apt install -y supervisor
