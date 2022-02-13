@@ -32,15 +32,6 @@ services {
         language 0x0f
     }
     srv-02 {
-        id 0x5e65
-        ecc 0xe0
-        label "DIM SUONO *ROMA*"
-        shortlabel "DS ROMA"
-        pty 10
-        pty-sd static
-        language 0x15
-    }
-    srv-03 {
         id 0xc479
         ecc 0xe1
         label "Capital London"
@@ -74,17 +65,6 @@ subchannels {
         buffer 40
         prebuffering 20
     }
-    sub-03 {
-        type dabplus
-        bitrate 128
-        id 4
-        protection 3
-        inputproto edi
-        inputuri "tcp://127.0.0.1:9003"
-        buffer-management prebuffering
-        buffer 40
-        prebuffering 20
-    }
 }
 
 components {
@@ -98,13 +78,6 @@ components {
     comp-02 {
         service srv-02
         subchannel sub-02
-        user-applications {
-            userapp "slideshow"
-        }
-    }
-    comp-03 {
-        service srv-03
-        subchannel sub-03
         user-applications {
             userapp "slideshow"
         }
