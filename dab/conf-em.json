@@ -71,8 +71,8 @@
             "padenc": {
                 "enable": "true",
                 "pad": "34",
-                "dls_file": "/var/tmp/metadata-P01.dls",
-                "slide_directory": "/var/tmp/slide-P01/",
+                "dls_file": "/home/pi/dab/mot/P01/INFO.dls",
+                "slide_directory": "/home/pi/dab/mot/P01/slide/",
                 "slide_sleeping": "0",
                 "slide_once": "true",
                 "raw_dls": "false",
@@ -144,8 +144,8 @@
             "padenc": {
                 "enable": "true",
                 "pad": "34",
-                "dls_file": "/var/tmp/metadata-P02.dls",
-                "slide_directory": "/var/tmp/slide-P02/",
+                "dls_file": "/home/pi/dab/mot/P02/INFO.dls",
+                "slide_directory": "/home/pi/dab/mot/P02/slide",
                 "slide_sleeping": "0",
                 "slide_once": "true",
                 "raw_dls": "false",
