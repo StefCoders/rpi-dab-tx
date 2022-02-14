@@ -138,9 +138,6 @@ EOF
 fi
 
 # Setup the configuration files for supervisor
-if [ $(ls /etc/supervisor/conf.d | wc -l) > 0 ]; then
-  sudo rm /etc/supervisor/conf.d/*
-fi
 sudo ln -s $HOME/dab/supervisor/*.conf /etc/supervisor/conf.d/
 
 # Restart supervisor
