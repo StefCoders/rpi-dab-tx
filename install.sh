@@ -117,8 +117,15 @@ if [ -d dab ]; then
 fi
 cp -r $(realpath $(dirname $0))/dab ${HOME}
 
-# Adapt the home directory in the supervisor configuration files
-sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/*.conf
+# Adapt the home directory in the supervisor/ODR-EncoderManager configuration files
+sed -e "s;/home/pi;${HOME};g" -i ${HOME}/dab/supervisor/*.conf -i ${HOME}/dab/conf-em.json
+
+# Adapt the user and group in the supervisor configuration files
+sed -e "s;user=pi;user=$(id --user --name);g" -e "s;group=pi;group=$(id --group --name);g" -i ${HOME}/dab/supervisor/*.conf
+
+# Adapt the user and group in the ODR-EncoderManager configuration files
+sed -e "s;\"user\": \"pi\";\"user\": \"$(id --user --name)\";g" -i ${HOME}/dab/conf-em.json
+sed -e "s;\"group\": \"pi\";\"group\": \"$(id --group --name)\";g" -i ${HOME}/dab/conf-em.json
 
 # Adapt the host for odr-dabmux-gui
 sed -e "s;--host=raspberrypi.local;--host=$(hostname -I | awk '{print $1}');" -i ${HOME}/dab/supervisor/ODR-misc.conf
