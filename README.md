@@ -6,7 +6,7 @@
 
 # Introduction
 The goal of the rpi-dab-tx project is to run a [Digital Audio Broadcasting](https://en.wikipedia.org/wiki/Digital_Audio_Broadcasting), [software-defined-radio](https://en.wikipedia.org/wiki/Software-defined_radio) transmitter on a [raspberry-pi](https://www.raspberrypi.com/) device. For this, you will need:
-- 1 raspberry pi running the latest version of raspi os (a debian-derived linux operating system)
+- 1 raspberry pi running the latest version of raspi os (a debian-derived linux operating system) or a computer capable of running a virtual host
 - 1 soapy-sdr compatible transceiver device, such as the [Hackrf One](https://greatscottgadgets.com/hackrf/one/) or the [LimeSDR](https://limemicro.com/products/boards/limesdr/) cards
 
 This project:
@@ -25,7 +25,7 @@ Since some software components, like the modulator, are CPU-intensive, it is pre
 1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit)". Then, click on "Choose storage" and select your SD-card device. Finally, click on "write" and follow the instructions
 1. If you plan to access your raspberry pi remotely through ssh, then create an empty file called "ssh" inside the boot partition, using your computer's file manager
 1. Remove the SD-card from your computer and insert it into your raspberry pi. Then switch it on
-1. Log into the raspberry pi (user profile is **pi** and user password is **raspberry**)
+1. Log into the raspberry pi (default user profile **pi** and password **raspberry**)
 
 ### Virtual host
 1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) on your physical host (WIndows, MacOs, non-debian Linux, \*BSD\*)
@@ -70,7 +70,7 @@ bash rpi-dab-tx/install.sh
 ```
 
 # Operations
-Point your web browser to http://raspberrypi.local:8001 (default user profile **odr** and password **odr**) to start and stop each components of the DAB/DAB+ transmitter: modulator, multiplexer, encoders (audio & data), encoder-manager and multiplex-manager. 
+Point your web browser to the **Supervisor web interface** on [RaspberryPI](http://raspberrypi.local:8001) or on [Virtual host](http://localhost:8001) (default user profile **odr** and password **odr**) to start and stop each components of the DAB/DAB+ transmitter: modulator, multiplexer, encoders (audio & data), encoder-manager and multiplex-manager.
 
 ## Role of each components
 - Encoder-manager: allows you to manage audio streams and related PAD
@@ -88,15 +88,15 @@ Point your web browser to http://raspberrypi.local:8001 (default user profile **
 - You can monitor each component output by clicking on the component action **Tail -f stdout** or **Tail -f stderr**
 
 # Configuration
-
-## Supervisor web access
+## User access
+### Supervisor web interface
 If you want to change the default user profile and/or user password authorized to access Supervisor, then apply the following command:
 ```
 sudo sed -e 's/^username = odr/^username = whatever_user/' -e 's/^password = odr/^password = whatever_password/' -i /etc/supervisor/supervisord.conf
 ```
 Please note that *whatever_user* is not related to any linux profiles
 
-## Encoder-manager web access
+### Encoder-manager web interface
 If you want to change the default user profile and/or user password authorized to access Encoder-manager, then apply the following command:
 ```
 sed -e 's/"username": "odr"/"username": "whatever_user"/' -e 's/"password": "odr"/"password": "whatever_password"/' -i $HOME/dab/conf-em.json
@@ -116,21 +116,24 @@ If you are using another SoapySDR-compatible transceiver card, then apply one of
 
 Also, check the SoapySDR documentation for your card to set the proper values for other SoapySDR fields, like **txgain**.
 
-## Change/Add audio streams
-### Multiplex
-1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 or srv-02) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf). 
-1. If your host is powerful enough, then you can add more services/sub-channels/components 
-
-### Encoders
-1. Point your web browser to http://raspberrypi.local:8003 (default user profile **odr** and password **odr**) to manage your audio streams and related PAD. Make sure that the **output** information matches your multiplex configuration (services and sub-channels)
-1. You can use the excellent [radio browser directory](https://www.radio-browser.info) to identify the url of the radio audio stream
-1. Test the radio audio stream url with vlc on your computer (not the raspberry) and check the bit rate
-
-## Other
+## Multiplex
 ### Change the name of the multiplex
 The default name of the multilex is **Micro DAB**. 
 
 If you want to change the name of the multiplex, then change the label and shortlabel values within the **ensemble** section in file $HOME/dab/mod.ini
 
 ## Encoders (audio & data)
-If you start the job **21-Multiplex-Manager**, then you can view some of the multiplex settings on your web browser at the following url: `http://raspberrypi.local:8002`
+If you start the job **21-Multiplex-Manager**, then you can view some of the multiplex settings on your web browser o: `http://raspberrypi.local:8002`
+
+## Audio and data
+If your Raspberry PI or your virtual host is powerful enough, then you can add more services/sub-channels/components
+
+### Encoders
+1. Start job **10-EncoderManager** from the Supervisor web access
+1. Point your web browser to the **Encoder Manager web interface**  on [RaspberryPi](http://raspberrypi.local:8003) or on [Virtual host](http://localhost:8003) (default user profile **odr** and password **odr**) to manage your audio streams and related PAD. 
+1. You can use the excellent [radio browser directory](https://www.radio-browser.info) to identify the url of the radio audio stream
+1. Test the radio audio stream url with vlc on your computer (not the raspberry) and check the bit rate
+
+### Multiplex
+1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 or srv-02) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf). 
+1. If you added more channels, then make sure that the new sub-channels match the new encoders you added previously
