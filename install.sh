@@ -108,6 +108,9 @@ sudo apt install -y python3-cherrypy3 python3-jinja2 python3-serial python3-yaml
 if [ ! -d ODR-EncoderManager ]; then
   git clone https://github.com/Opendigitalradio/ODR-EncoderManager.git
 fi
+## Add the current user to the dialout and audio groups
+sudo usermod --append --group dialout $(id --user --name)
+sudo usermod --append --group audio $(id --user --name)
 
 popd # back to ${HOME}
 
