@@ -34,8 +34,8 @@ services {
     srv-02 {
         id 0xc479
         ecc 0xe1
-        label "Capital London"
-        shortlabel "Capital"
+        label "CAPITAL LONDON"
+        shortlabel "CAPITAL"
         pty 10
         pty-sd static
         language 0x09
