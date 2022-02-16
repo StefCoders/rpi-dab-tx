@@ -103,6 +103,10 @@ sed -e 's/"username": "odr"/"username": "whatever_user"/' -e 's/"password": "odr
 Please note that *whatever_user* is not related to any linux profiles
 
 ## Modulator
+### Improve the RF spectrum
+If your hardware/virtual host is powerful enough, then you should set the following 2 parameters in the $HOME/dab/mod.ini file to more stringent value:
+- [modulator] rate=4096000
+- [firfilter] enabled=1
 ### Change the transmission channel
 If channel 5A is being used in your area, you can easily switch to a [new transmission channel](http://www.wohnort.org/DAB/freqs.html) by applying the following command: `sed -e 's/^channel=5A/^channel=a_free_channel_in_your_area/' -i $HOME/dab/mod.ini`
 
@@ -117,13 +121,13 @@ Also, check the SoapySDR documentation for your card to set the proper values fo
 
 ## Multiplex
 ### Change the name of the multiplex
-The default name of the multilex is **Micro DAB**. 
+If you want to change the name of the multiplex (by default **Micro DAB**), then change the label and shortlabel values within the **ensemble** block in file $HOME/dab/conf.mux
 
-If you want to change the name of the multiplex, then change the label and shortlabel values within the **ensemble** section in file $HOME/dab/mod.ini
+### View and change some parameters
+1. Start job **21-Multiplex-Manager**
+1. Point your web browser to the **Multiplex Manager web interface**  on [RaspberryPi](http://raspberrypi.local:8002) or on [Virtual host](http://localhost:8002)
 
 ## Encoders (audio & data)
-If you start the job **21-Multiplex-Manager**, then you can view some of the multiplex settings on your web browser o: `http://raspberrypi.local:8002`
-
 ## Audio and data
 If your Raspberry PI or your virtual host is powerful enough, then you can add more services/sub-channels/components
 
