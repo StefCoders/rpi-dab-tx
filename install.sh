@@ -16,9 +16,9 @@
 #
 
 # Update the system and install the essential tools
-sudo apt update
-sudo apt upgrade -y
-sudo apt install -y build-essential automake libtool
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install -y build-essential automake libtool
 pushd ${HOME}
 
 # Create the folder containing the ODR tools
@@ -28,7 +28,7 @@ fi
 pushd ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: audio encoder
-sudo apt install -y libzmq3-dev libzmq5 libvlc-dev vlc-data vlc-plugin-base libcurl4-openssl-dev pkg-config
+sudo apt-get install -y libzmq3-dev libzmq5 libvlc-dev vlc-data vlc-plugin-base libcurl4-openssl-dev pkg-config
 if [ ! -d ODR-AudioEnc ]; then
   git clone https://github.com/Opendigitalradio/ODR-AudioEnc.git
 fi
@@ -40,7 +40,7 @@ sudo make install
 popd # back to ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: PAD encoder
-sudo apt install -y libmagickwand-dev
+sudo apt-get install -y libmagickwand-dev
 if [ ! -d ODR-PadEnc ]; then
   git clone https://github.com/Opendigitalradio/ODR-PadEnc.git
 fi
@@ -52,7 +52,7 @@ sudo make install
 popd # back to ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: dab multiplexer
-sudo apt install -y libboost-system-dev libcurl4-openssl-dev python3-zmq
+sudo apt-get install -y libboost-system-dev libcurl4-openssl-dev python3-zmq
 if [ ! -d ODR-DabMux ]; then
   git clone https://github.com/Opendigitalradio/ODR-DabMux.git
 fi
@@ -70,7 +70,7 @@ sudo make install
 popd # back to ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: modulator
-sudo apt install -y libfftw3-dev libsoapysdr-dev
+sudo apt-get install -y libfftw3-dev libsoapysdr-dev
 if [ ! -d ODR-DabMod ]; then
   git clone https://github.com/Opendigitalradio/ODR-DabMod.git
 fi
@@ -104,7 +104,7 @@ sudo make install
 popd # back to ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: encoder manager
-sudo apt install -y python3-cherrypy3 python3-jinja2 python3-serial python3-yaml supervisor python3-pysnmp4
+sudo apt-get install -y python3-cherrypy3 python3-jinja2 python3-serial python3-yaml supervisor python3-pysnmp4
 if [ ! -d ODR-EncoderManager ]; then
   git clone https://github.com/Opendigitalradio/ODR-EncoderManager.git
 fi
@@ -134,7 +134,7 @@ sed -e "s;\"group\": \"pi\";\"group\": \"$(id --group --name)\";g" -i ${HOME}/da
 sed -e "s;--host=raspberrypi.local;--host=$(hostname -I | awk '{print $1}');" -i ${HOME}/dab/supervisor/ODR-misc.conf
 
 # Install the supervisor package
-sudo apt install -y supervisor
+sudo apt-get install -y supervisor
 
 # Congigure the http server for supervisor
 if [ ! $(grep inet_http_server /etc/supervisor/supervisord.conf) ]; then
