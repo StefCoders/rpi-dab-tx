@@ -22,8 +22,9 @@ Since some software components, like the modulator, are CPU-intensive, it is pre
 
 ### Raspberry PI
 1. Download [rpi-imager](https://www.raspberrypi.com/software/) onto your computer (Windows, MacOS or linux). This software will allow you initialize the SD-card with the operating system
-1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit)". Then, click on "Choose storage" and select your SD-card device. Finally, click on "write" and follow the instructions
-1. If you plan to access your raspberry pi remotely through ssh, then create an empty file called "ssh" inside the boot partition, using your computer's file manager
+1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit or 64-bits)". Then, click on "Choose storage" and select your SD-card device
+1. Click on the setup button to set specific parameters (like a ssh access, user profile/password)
+1. Finally click on the write button to install the operating system on your SD-card
 1. Remove the SD-card from your computer and insert it into your raspberry pi. Then switch it on
 1. Log into the raspberry pi (default user profile **pi** and password **raspberry**)
 
@@ -40,7 +41,7 @@ Since some software components, like the modulator, are CPU-intensive, it is pre
 1. Log off and quit the virtual session: `exit`
 1. Stop the virtual session: `vagrant halt`
 1. Connect the SoapySDR-compatible transceiver card to the host system
-1. Add a USB filter to your VirtualBox session (named **dab_tx**) for your SoapySDR card
+1. Add a USB filter to your VirtualBox session (named **dab_tx**) for your SoapySDR-compatible card
 1. Restart the virtual session: `vagrant up`
 1. Login again into your virtual session: `vagrant ssh`
 
@@ -50,18 +51,16 @@ Since some software components, like the modulator, are CPU-intensive, it is pre
 ```
 sudo timedatectl set-timezone your_timezone
 ```
-3. Clone this repository
+3. Clone the production branch of the repository
 ```
 sudo apt update
 sudo apt install -y git
 cd
 git clone https://github.com/colisee/rpi-dab-tx.git
 ```
-4. (Optional) Switch to the dev branch if you want to test the latest features (but expect possible bugs)
+4. Or clone the dev branch of the repository if you want to test the latest features (but expect possible bugs)
 ```
-pushd rpi-dab-tx
-git checkout dev
-popd
+git clone https://github.com/colisee/rpi-dab-tx.git --branch dev
 ```
 
 5. Run the installation script:
