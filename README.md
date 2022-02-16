@@ -21,8 +21,9 @@ This project was initially designed with the model 3B of the Raspberry pi. As of
 Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the system with a clean Debian-lite system.
 
 ### Raspberry PI
-1. Download [rpi-imager](https://www.raspberrypi.com/software/) onto your computer (Windows, MacOS or linux). This software will allow you initialize the SD-card with the operating system
-1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit or 64-bits)". Then, click on "Choose storage" and select your SD-card device
+1. Download [rpi-imager](https://www.raspberrypi.com/software/) onto your computer (Windows, MacOS or linux). This software will allow you to initialize the SD-card with the operating system
+1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit or 64-bits)"
+1. Click on "Choose storage" and select your SD-card device
 1. Click on the setup button to set specific parameters (like a ssh access, user profile/password)
 1. Finally click on the write button to install the operating system on your SD-card
 1. Remove the SD-card from your computer and insert it into your raspberry pi. Then switch it on
@@ -36,8 +37,8 @@ Since some software components, like the modulator, are CPU-intensive, it is pre
 1. Open a command prompt on your physical host
 1. Copy the Vagrantfile from this repository
 1. Create and start the Debian virtual session: `vagrant up`
-1. Log into the Debian virtual session as profile **vagrant**. You won't need a password (which is **vagrant**) : `vagrant ssh`
-1. Update the Debian system by running: `sudo apt update; sudo apt upgrade -y`
+1. Log into the Debian virtual session as user **vagrant**: `vagrant ssh`
+1. Update the Debian system by running: `sudo apt-get update; sudo apt-get upgrade -y`
 1. Log off and quit the virtual session: `exit`
 1. Stop the virtual session: `vagrant halt`
 1. Connect the SoapySDR-compatible transceiver card to the host system
@@ -46,16 +47,15 @@ Since some software components, like the modulator, are CPU-intensive, it is pre
 1. Login again into your virtual session: `vagrant ssh`
 
 ## Setting the odr-mmbTools software up
-1. I strongly suggest you change the password with the command **passwd**
+1. I strongly suggest you change the password with the command **passwd** (vagrant's password is **vagrant**)
 2. Set the proper timezone on the raspberry. You can identify the timezone values with the command **timedatectl list-timezones**
 ```
 sudo timedatectl set-timezone your_timezone
 ```
 3. Clone the production branch of the repository
 ```
-sudo apt update
-sudo apt install -y git
 cd
+sudo apt-get install -y git
 git clone https://github.com/colisee/rpi-dab-tx.git
 ```
 4. Or clone the dev branch of the repository if you want to test the latest features (but expect possible bugs)
@@ -69,7 +69,7 @@ bash rpi-dab-tx/install.sh
 ```
 
 # Operations
-Point your web browser to the **Supervisor web interface** on [RaspberryPI](http://raspberrypi.local:8001) or on [Virtual host](http://localhost:8001) (default user profile **odr** and password **odr**) to start and stop each components of the DAB/DAB+ transmitter: modulator, multiplexer, encoders (audio & data), encoder-manager and multiplex-manager.
+Point your web browser to the **Supervisor web interface** on the [RaspberryPI](http://raspberrypi.local:8001) or on the [Virtual host](http://localhost:8001) (default user profile **odr** and password **odr**) to start and stop each components of the DAB/DAB+ transmitter: modulator, multiplexer, encoders (audio & data), encoder-manager and multiplex-manager.
 
 ## Role of each components
 - Encoder-manager: allows you to manage audio streams and related PAD
