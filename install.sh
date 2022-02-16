@@ -28,7 +28,7 @@ fi
 pushd ${HOME}/ODR-mmbTools
 
 # Install mmb-tools: audio encoder
-sudo apt install -y libzmq3-dev libzmq5 libvlc-dev vlc-data vlc-plugin-base libcurl4-openssl-dev
+sudo apt install -y libzmq3-dev libzmq5 libvlc-dev vlc-data vlc-plugin-base libcurl4-openssl-dev pkg-config
 if [ ! -d ODR-AudioEnc ]; then
   git clone https://github.com/Opendigitalradio/ODR-AudioEnc.git
 fi
