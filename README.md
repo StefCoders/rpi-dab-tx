@@ -1,6 +1,9 @@
 # Table of contents
 - [Introduction](#introduction)
 - [Manual setup](#manual-setup)
+- [Operations](#operations)# Table of contents
+- [Introduction](#introduction)
+- [Manual setup](#manual-setup)
 - [Operations](#operations)
 - [Configuration](#configuration)
 
@@ -66,6 +69,16 @@ git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git --branch dev
 5. Run the installation script:
 ```
 bash rpi-dab-tx/install.sh
+```
+
+6. Install Stuff needed for the odr-tools:
+```
+sudo apt-get update
+sudo apt-get install python3pip
+sudo pip install cherrypy
+sudo pip install jinja2
+sudo pip install pysnmp
+sudo pip install pyyaml==5.4.1
 ```
 
 # Operations
@@ -140,3 +153,4 @@ If your Raspberry PI or your virtual host is powerful enough, then you can add m
 ### Multiplex
 1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 or srv-02) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf). 
 1. If you added more channels, then make sure that the new sub-channels match the new encoders you added previously
+
