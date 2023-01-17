@@ -1,3 +1,5 @@
+Edits by Christoph
+
 # Table of contents
 - [Introduction](#introduction)
 - [Manual setup](#manual-setup)
