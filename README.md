@@ -18,13 +18,13 @@ The goal of the rpi-dab-tx project is to run a [Digital Audio Broadcasting](http
 
 ![alt text](https://www.raspberrypi.com/app/uploads/2022/02/COLOUR-Raspberry-Pi-Symbol-Registered.png)
 
-Raspberry Pi 1 ❌ Too Slow (Untested)
-Raspberry Pi 2 ❓❌ Slow? (Untested)
-Raspberry Pi 3 ✅ Max 4 streams or it crashes (Tested)
-Raspberry Pi 4 ✅ (Untested)
-Raspberry Pi 0 ❌ (Untested)
-Raspberry Pi 0w ❌ (Untested)
-Raspberry Pi 2w ❓ (Untested)
+- Raspberry Pi 1 ❌ Too Slow (Untested)
+- Raspberry Pi 2 ❓❌ Slow? (Untested)
+- Raspberry Pi 3 ✅ Max 4 streams or it crashes (Tested)
+- Raspberry Pi 4 ✅ (Untested)
+- Raspberry Pi 0 ❌ (Untested)
+- Raspberry Pi 0w ❌ (Untested)
+- Raspberry Pi 2w ❓ (Untested)
 
 
 This project:
