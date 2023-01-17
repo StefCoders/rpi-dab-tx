@@ -56,11 +56,11 @@ sudo timedatectl set-timezone your_timezone
 ```
 cd
 sudo apt-get install -y git
-git clone https://github.com/colisee/rpi-dab-tx.git
+git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git
 ```
 4. Or clone the dev branch of the repository if you want to test the latest features (but expect possible bugs)
 ```
-git clone https://github.com/colisee/rpi-dab-tx.git --branch dev
+git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git --branch dev
 ```
 
 5. Run the installation script:
