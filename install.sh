@@ -1,5 +1,5 @@
 #    install.sh - Install the software stack
-#    Copyright (C) 20222 Robin ALEXANDER
+#    Copyright (C) 2023 DeepCoder (deepcoder.co.uk)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -14,6 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+
+read -p "Are you sure? " -n 1 -r
+echo    # (optional) move to a new line
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    
+
 
 # Update the system and install the essential tools
 sudo apt-get update
@@ -155,3 +162,9 @@ sudo supervisorctl reread
 sudo supervisorctl reload
 
 popd # back to where we were when we called this script
+
+else
+ echo("Cancelled")
+ echo("Script by DeepCoder")
+
+fi
