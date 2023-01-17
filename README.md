@@ -86,15 +86,11 @@ git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git --branch dev
 bash rpi-dab-tx/install.sh
 ```
 
-6. Install Stuff needed for the odr-tools:
-```
-sudo apt-get update
-sudo apt-get install python3pip
-sudo pip install cherrypy
-sudo pip install jinja2
-sudo pip install pysnmp
-sudo pip install pyyaml==5.4.1
-```
+Then wait.
+
+and wait..
+
+and wait...
 
 # Operations
 Point your web browser to the **Supervisor web interface** on the [RaspberryPI](http://raspberrypi.local:8001) or on the [Virtual host](http://localhost:8001) (default user profile **odr** and password **odr**) to start and stop each components of the DAB/DAB+ transmitter: modulator, multiplexer, encoders (audio & data), encoder-manager and multiplex-manager.
