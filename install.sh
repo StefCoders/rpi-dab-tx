@@ -25,7 +25,11 @@ then
 # Update the system and install the essential tools
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install -y build-essential automake libtool
+sudo apt-get install -y build-essential automake libtool python3pip
+sudo pip install cherrypy
+sudo pip install jinja2
+sudo pip install pysnmp
+sudo pip install pyyaml==5.4.1
 pushd ${HOME}
 
 # Create the folder containing the ODR tools
