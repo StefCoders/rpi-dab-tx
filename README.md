@@ -1,7 +1,7 @@
 # Table of contents
 - [Introduction](#introduction)
 - [Manual setup](#manual-setup)
-- [Operations](#operations)# Table of contents
+- [Operations](#operations)
 - [Introduction](#introduction)
 - [Manual setup](#manual-setup)
 - [Operations](#operations)
