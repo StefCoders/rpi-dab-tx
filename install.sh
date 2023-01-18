@@ -24,7 +24,7 @@ then
 echo "Update the system and install the essential tools"
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install -y build-essential automake libtool python3pip
+sudo apt-get install -y build-essential automake libtool python3-pip
 sudo pip install cherrypy
 sudo pip install jinja2
 sudo pip install pysnmp
