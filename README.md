@@ -1,5 +1,30 @@
 Edits by Christoph
 
+## Setting the odr-mmbTools software up
+1. I strongly suggest you change the password with the command **passwd** (vagrant's password is **vagrant**)
+2. Set the proper timezone on the raspberry. You can identify the timezone values with the command **timedatectl list-timezones**
+```
+sudo timedatectl set-timezone "your_timezone" (without "")
+```
+3. Clone the production branch of the repository
+```
+cd
+sudo apt-get install -y git
+git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git
+```
+
+4. Run the installation script:
+```
+bash rpi-dab-tx/install.sh
+```
+
+Then wait.
+
+and wait..
+
+and wait...
+
+
 # Table of contents
 - [Introduction](#introduction)
 - [Manual setup](#manual-setup)
