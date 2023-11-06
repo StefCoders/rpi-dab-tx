@@ -10,7 +10,7 @@ sudo timedatectl set-timezone "your_timezone" (without "")
 ```
 cd
 sudo apt-get install -y git
-git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git
+git clone https://github.com/StefCoders/rpi-dab-tx.git
 ```
 
 4. Run the installation script:
@@ -23,6 +23,8 @@ Then wait.
 and wait..
 
 and wait...
+
+(This will work on any linux machine?)
 
 
 # Table of contents
