@@ -1,193 +1,284 @@
-Edits by Christoph
-
-## Setting the odr-mmbTools software up
-1. I strongly suggest you change the password with the command **passwd** (vagrant's password is **vagrant**)
-2. Set the proper timezone on the raspberry. You can identify the timezone values with the command **timedatectl list-timezones**
-```
-sudo timedatectl set-timezone "your_timezone" (without "")
-```
-3. Clone the production branch of the repository
-```
-cd
-sudo apt-get install -y git
-git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git
-```
-
-4. Run the installation script:
-```
-bash rpi-dab-tx/install.sh
-```
-
-Then wait.
-
-and wait..
-
-and wait...
-
 
 # Table of contents
 - [Introduction](#introduction)
-- [Manual setup](#manual-setup)
+- [Quick start](#quick-start)
+- [Compatibility](#compatibility)
+- [Manual setup](#manual-setup)  
+  - [Raspberry Pi (bare metal)](#raspberry-pi-bare-metal)
+  - [Virtual host (VirtualBox + Vagrant)](#virtual-host-virtualbox--vagrant)
+- [Install odr-mmbTools & project](#install-odr-mmbtools--project)
 - [Operations](#operations)
-- [Introduction](#introduction)
-- [Manual setup](#manual-setup)
-- [Operations](#operations)
+  - [Component roles](#component-roles)
+  - [Starting / stopping / logs](#starting--stopping--logs)
 - [Configuration](#configuration)
+  - [User access (Supervisor & Encoder Manager)](#user-access-supervisor--encoder-manager)
+  - [Modulator tuning & device selection](#modulator-tuning--device-selection)
+  - [Multiplex configuration](#multiplex-configuration)
+  - [Encoders (audio & PAD)](#encoders-audio--pad)
+- [Troubleshooting & tips](#troubleshooting--tips)
+- [Acknowledgements & references](#acknowledgements--references)
 
-# Introduction
-The goal of the rpi-dab-tx project is to run a [Digital Audio Broadcasting](https://en.wikipedia.org/wiki/Digital_Audio_Broadcasting), [software-defined-radio](https://en.wikipedia.org/wiki/Software-defined_radio) transmitter on a [raspberry-pi](https://www.raspberrypi.com/) device. For this, you will need:
-- 1 raspberry pi running the latest version of raspi os (a debian-derived linux operating system) or a computer capable of running a virtual host
-- 1 soapy-sdr compatible transceiver device, such as the [Hackrf One](https://greatscottgadgets.com/hackrf/one/) or the [LimeSDR](https://limemicro.com/products/boards/limesdr/) cards
+---
 
-# Compatibility
+## Introduction
+This project runs a **DAB / DAB+** transmitter using a Raspberry Pi (or a Debian virtual host) together with a SoapySDR-compatible transceiver (e.g. HackRF One, LimeSDR). It uses the **odr-mmbTools** stack (Open Digital Radio) to encode, multiplex and modulate a micro-DAB ensemble.
 
-![alt text](https://www.raspberrypi.com/app/uploads/2022/02/COLOUR-Raspberry-Pi-Symbol-Registered.png)
+**Requirements (overview)**  
+- Raspberry Pi (recommended: Pi 3 or Pi 4) _or_ a Debian virtual machine.  
+- A SoapySDR-compatible TX device (HackRF One, LimeSDR, PlutoSDR, etc.).  
+- Network access for package installation and streaming sources.
 
-- Raspberry Pi 1 ❌ Too Slow (Untested)
-- Raspberry Pi 2 ❓❌ Slow? (Untested)
-- Raspberry Pi 3 ✅ Max 4 streams or it crashes (Tested)
-- Raspberry Pi 4 ✅ (Works well)
-- Raspberry Pi 5 ❓ (Untested)
-- Raspberry Pi 0 ❌ (Untested)
-- Raspberry Pi 0w ❌ (Untested)
-- Raspberry Pi 2w ❓ (Untested)
+---
 
+## Quick start
+Copy/paste the commands below on your target device **after** following the manual setup section.
 
-This project:
-- Uses the [odr-mmbtools](https://www.opendigitalradio.org/mmbtools) software stack developed by the [Open Digital Radio](https://www.opendigitalradio.org/) non-profit association
-- Uses the [soapy-sdr](https://github.com/pothosware/SoapySDR/wiki) library
-- Provides sample configuration files that will allow you to broadcast a multiplex with 2 radio stations ([Radio Monaco](https://radio-monaco.com) and [Capital FM London](https://www.capitalfm.com/london/)). You can naturally change the content of these files to suit your needs. 
+```bash
+# update packages
+sudo apt-get update && sudo apt-get upgrade -y
 
-# Manual setup
-This project was initially designed with the model 3B of the Raspberry pi. As of version 1.2.0, it can also run on a virtual Debian system.
-
-## Setting the Operating system up
-Since some software components, like the modulator, are CPU-intensive, it is preferable to configure the system with a clean Debian-lite system.
-
-### Raspberry PI
-1. Download [rpi-imager](https://www.raspberrypi.com/software/) onto your computer (Windows, MacOS or linux). This software will allow you to initialize the SD-card with the operating system
-1. Run rpi-imager on your computer. Click on "Choose OS", then on "Raspberry Pi OS (other)" and select "Raspberry Pi OS Lite (32-bit or 64-bits)"
-1. Click on "Choose storage" and select your SD-card device
-1. Click on the setup button to set specific parameters (like a ssh access, user profile/password)
-1. Finally click on the write button to install the operating system on your SD-card
-1. Remove the SD-card from your computer and insert it into your raspberry pi. Then switch it on
-1. Log into the raspberry pi (default user profile **pi** and password **raspberry**)
-
-### Virtual host
-1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) on your physical host (WIndows, MacOs, non-debian Linux, \*BSD\*)
-1. Install [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) on your physical host
-1. Install [Vagrant](https://www.vagrantup.com/) on your physical host
-1. Start Virtualbox
-1. Open a command prompt on your physical host
-1. Copy the Vagrantfile from this repository
-1. Create and start the Debian virtual session: `vagrant up`
-1. Log into the Debian virtual session as user **vagrant**: `vagrant ssh`
-1. Update the Debian system by running: `sudo apt-get update; sudo apt-get upgrade -y`
-1. Log off and quit the virtual session: `exit`
-1. Stop the virtual session: `vagrant halt`
-1. Connect the SoapySDR-compatible transceiver card to the host system
-1. Add a USB filter to your VirtualBox session (named **dab_tx**) for your SoapySDR-compatible card
-1. Restart the virtual session: `vagrant up`
-1. Login again into your virtual session: `vagrant ssh`
-
-## Setting the odr-mmbTools software up
-1. I strongly suggest you change the password with the command **passwd** (vagrant's password is **vagrant**)
-2. Set the proper timezone on the raspberry. You can identify the timezone values with the command **timedatectl list-timezones**
-```
-sudo timedatectl set-timezone your_timezone
-```
-3. Clone the production branch of the repository
-```
-cd
+# install git and clone the project
 sudo apt-get install -y git
-git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git
-```
-4. Or clone the dev branch of the repository if you want to test the latest features (but expect possible bugs)
-```
-git clone https://github.com/MaxDeepCoder/rpi-dab-tx.git --branch dev
-```
+cd ~
+git clone https://github.com/StefCoders/rpi-dab-tx.git
 
-5. Run the installation script:
-```
+# run installer
 bash rpi-dab-tx/install.sh
 ```
 
-Then wait.
+**Notes**
+- Monitor the install script output in the same terminal to spot errors (the script prints progress & errors).
+- The project web UIs run on the host at ports 8001–8003 (see Operations).
 
-and wait..
+---
 
-and wait...
+## Compatibility
 
-# Operations
-Point your web browser to the **Supervisor web interface** on the [RaspberryPI](http://raspberrypi.local:8001) or on the [Virtual host](http://localhost:8001) (default user profile **odr** and password **odr**) to start and stop each components of the DAB/DAB+ transmitter: modulator, multiplexer, encoders (audio & data), encoder-manager and multiplex-manager.
+![Raspberry Pi logo](https://www.raspberrypi.com/app/uploads/2022/02/COLOUR-Raspberry-Pi-Symbol-Registered.png)
 
-## Role of each components
-- Encoder-manager: allows you to manage audio streams and related PAD
-- Audio encoder: one per radio station being broadcasted. Packs the radio web stream and the data from the PAD encoder and shares it with the multiplexer
-- PAD encoder: one per radio station being broadcasted. Gathers data (artist, song, radio slogan and radio logo) and shares it with the related audio encoder
-- Multiplexer: packs the data from the audio encoders into a DAB/DAB+ ensemble, called **Micro DAB**
-- Multiplex-manager: allows you to view and modify some multiplex parameters
-- Modulator: creates a modulation data from the multiplexer and sends it to the SDR transceiver card
-- SDR transceiver card: broadcast the DAB ensemble. The initial radio channel is **5A** and can be changed, should this channel already be used in your area
+- **Raspberry Pi 1** — ❌ Too slow (untested)  
+- **Raspberry Pi 2** — ❓ Likely slow (untested)  
+- **Raspberry Pi 3** — ✅ Works (tested). Up to ~4 streams, more may crash under heavy load.  
+- **Raspberry Pi 4** — ✅ Recommended for best performance.  
+- **Raspberry Pi 5** — ❓ Untested (but likely faster).  
+- **Raspberry Pi Zero / Zero W / 2W** — ❌ Not recommended (untested).
 
-## Running the DAB service
-- To start all services, I recommend you start the encoders (audio & pad) first, then the multiplexer and finally the modulator
-- To stop all services, I recommend that you do not use the **STOP ALL** button but that you stop the multiplexer first (this will trigger a clean stop of the modulator). Once the modulator is off, you can use use the **STOP ALL** button to close the remaining jobs.
-- To start a component, click on that component **start** action link
-- You can monitor each component output by clicking on the component action **Tail -f stdout** or **Tail -f stderr**
+This project:
+- Uses **odr-mmbtools** (Open Digital Radio)
+- Uses **SoapySDR** for hardware abstraction
+- Provides sample configs (example: 2 services in a Micro DAB)
 
-# Configuration
-## User access
-### Supervisor web interface
-If you want to change the default user profile and/or user password authorized to access Supervisor, then apply the following command:
+---
+
+## Manual setup
+
+### Raspberry Pi (bare metal)
+1. Download and run **Raspberry Pi Imager** on your computer:  
+   https://www.raspberrypi.com/software/
+2. In the Imager: **Choose OS → Raspberry Pi OS (other) → Raspberry Pi OS Lite** (32-bit or 64-bit).
+3. Choose your SD card and write the image.
+4. Optionally set SSH / user in Imager's advanced options (or use default `pi` / `raspberry`).
+5. Insert the SD card into the Pi and boot.
+6. Log in (default: `pi` / `raspberry`) and run:
+   ```bash
+   sudo apt-get update && sudo apt-get upgrade -y
+   ```
+
+### Virtual host (VirtualBox + Vagrant)
+1. Install VirtualBox: https://www.virtualbox.org/wiki/Downloads  
+2. Install the VirtualBox Extension Pack.  
+3. Install Vagrant: https://www.vagrantup.com/  
+4. Start VirtualBox.
+5. Copy the `Vagrantfile` from this repository to your host machine (or `git clone` on host).
+6. From the folder with `Vagrantfile` run:
+   ```bash
+   vagrant up
+   vagrant ssh
+   ```
+7. Inside the VM run:
+   ```bash
+   sudo apt-get update && sudo apt-get upgrade -y
+   ```
+8. Exit the VM: `exit`  
+   To attach your SoapySDR USB device to the VM: add a USB filter in VirtualBox for your device (name it e.g. `dab_tx`), then `vagrant halt` and `vagrant up` again so the VM sees the device.
+
+---
+
+## Install odr-mmbTools & project
+1. (Optional but recommended) change the default user password:
+   ```bash
+   passwd
+   ```
+   If you used the Vagrant VM: default user is `vagrant` / `vagrant`.
+
+2. Set the timezone:
+   ```bash
+   timedatectl list-timezones
+   sudo timedatectl set-timezone "Your/Timezone"
+   ```
+   (example: `sudo timedatectl set-timezone Europe/London`)
+
+3. Clone the repository (production):
+   ```bash
+   cd ~
+   sudo apt-get install -y git
+   git clone https://github.com/StefCoders/rpi-dab-tx.git
+   ```
+   Or clone the `dev` branch (bleeding edge):
+   ```bash
+   git clone https://github.com/StefCoders/rpi-dab-tx.git --branch dev
+   ```
+
+4. Run the installer:
+   ```bash
+   bash ~/rpi-dab-tx/install.sh
+   ```
+   The installer prints progress and errors to the terminal; monitor the output and fix any missing package errors if they appear.
+
+---
+
+## Operations
+
+### Web UIs
+- **Supervisor web interface** (start/stop services):  
+  - `http://raspberrypi.local:8001` (or `http://<host-ip>:8001`)  
+  - Default credential: `odr` / `odr`
+- **Multiplex Manager**: `http://raspberrypi.local:8002` (default `odr`/`odr`)
+- **Encoder Manager**: `http://raspberrypi.local:8003` (default `odr`/`odr`)
+
+> Replace `raspberrypi.local` with your host IP if mDNS is not available.
+
+### Component roles
+- **Encoder Manager** — Manage audio streams and PAD data (web UI).
+- **Audio Encoder** — One per service; encodes audio stream and combines PAD data.
+- **PAD Encoder** — Collects metadata (artist, song, logo) for a service.
+- **Multiplexer** — Packs encoded services into a DAB ensemble (Micro DAB).
+- **Multiplex Manager** — Tune multiplex-level parameters (web UI).
+- **Modulator** — Converts multiplex output into IQ samples for the SDR.
+- **SDR transceiver** — The physical device that transmits RF (configured via SoapySDR).
+
+### Recommended run order
+1. Start encoder(s) (audio + PAD) first.  
+2. Start the multiplexer.  
+3. Start the modulator last.
+
+### Stopping
+- Stop the multiplexer first — this allows the modulator to stop cleanly.  
+- After the modulator has stopped, stop encoders or use **STOP ALL**.
+
+### Logs
+- From the Supervisor web UI you can view `Tail -f stdout` / `Tail -f stderr` for each process.
+- From the shell, use `supervisorctl` (if installed) or check process logs where they are written.
+
+---
+
+## Configuration
+
+### User access
+#### Supervisor web interface
+Edit the Supervisor configuration if you want to change the UI credentials.
+
+Recommended: edit the file with an editor:
+```bash
+sudo nano /etc/supervisor/supervisord.conf
 ```
-sudo sed -e 's/^username = odr/^username = whatever_user/' -e 's/^password = odr/^password = whatever_password/' -i /etc/supervisor/supervisord.conf
+Find the `[inet_http_server]` block (or the relevant auth lines) and change `username` and `password`.
+
+Quick `sed` (example — replace placeholders):
+```bash
+sudo sed -i -E 's/^(username[[:space:]]*=[[:space:]]*)odr/\1NEWUSERNAME/' /etc/supervisor/supervisord.conf
+sudo sed -i -E 's/^(password[[:space:]]*=[[:space:]]*)odr/\1NEWPASSWORD/' /etc/supervisor/supervisord.conf
 ```
-Please note that *whatever_user* is not related to any linux profiles
+> Editing the file with `nano` is safer if you are not comfortable with `sed`.
 
-### Encoder-manager web interface
-If you want to change the default user profile and/or user password authorized to access Encoder-manager, then apply the following command:
+#### Encoder-manager web interface
+Edit `$HOME/dab/conf-em.json` to change the web UI credentials:
+```bash
+sed -i 's/"username": "odr"/"username": "NEWUSER"/' $HOME/dab/conf-em.json
+sed -i 's/"password": "odr"/"password": "NEWPASS"/'    $HOME/dab/conf-em.json
 ```
-sed -e 's/"username": "odr"/"username": "whatever_user"/' -e 's/"password": "odr"/"password": "whatever_password"/' -i $HOME/dab/conf-em.json
+Restart the related services after changing credentials.
+
+---
+
+### Modulator
+#### Improve RF spectrum (if host is powerful enough)
+Edit `$HOME/dab/mod.ini` and make these changes:
+```ini
+[modulator]
+rate=4096000
+
+[firfilter]
+enabled=1
 ```
-Please note that *whatever_user* is not related to any linux profiles
+(You can edit with `nano $HOME/dab/mod.ini` or use `sed` to change values.)
 
-## Modulator
-### Improve the RF spectrum
-If your hardware/virtual host is powerful enough, then you should set the following 2 parameters in the $HOME/dab/mod.ini file to more stringent value:
-- [modulator] rate=4096000
-- [firfilter] enabled=1
-### Change the transmission channel
-If channel 5A is being used in your area, you can easily switch to a [new transmission channel](http://www.wohnort.org/DAB/freqs.html) by applying the following command: `sed -e 's/^channel=5A/^channel=a_free_channel_in_your_area/' -i $HOME/dab/mod.ini`
+#### Change transmission channel
+If `5A` is in use locally, pick a free DAB channel for your area and update `mod.ini`. Example: change from `5A` → `6A`:
+```bash
+sed -i 's/^channel=5A/channel=6A/' $HOME/dab/mod.ini
+```
+Check local/regulatory rules before transmitting RF — make sure you have permission and operate on allowed frequencies.
 
-### Change the SOAPYSDR-compatible device
-This project is configured for the HackRF One SDR transceiver card.
+#### Select SoapySDR device
+Default config targets HackRF. To switch drivers in `mod.ini`:
+```bash
+# LimeSDR
+sed -i 's/device=driver=hackrf/device=driver=lime/' $HOME/dab/mod.ini
 
-If you are using another SoapySDR-compatible transceiver card, then apply one of the following commands:
-- LimeSDR: `sed -e 's/^device=driver=hackrf/^device=driver=lime/' -i $HOME/dab/mod.ini`
-- PlutoSDR: `sed -e 's/^device=driver=hackrf/^device=driver=plutosdr/' -i $HOME/dab/mod.ini`
+# PlutoSDR
+sed -i 's/device=driver=hackrf/device=driver=plutosdr/' $HOME/dab/mod.ini
+```
+Also review SoapySDR docs for your device and fine-tune parameters like `txgain`.
 
-Also, check the SoapySDR documentation for your card to set the proper values for other SoapySDR fields, like **txgain**.
-
-## Multiplex
-### Change the name of the multiplex
-If you want to change the name of the multiplex (by default **Micro DAB**), then change the label and shortlabel values within the **ensemble** block in file $HOME/dab/conf.mux
-
-### View and change some parameters
-1. Start job **21-Multiplex-Manager**
-1. Point your web browser to the **Multiplex Manager web interface**  on [RaspberryPi](http://raspberrypi.local:8002) or on [Virtual host](http://localhost:8002)
-
-## Encoders (audio & data)
-## Audio and data
-If your Raspberry PI or your virtual host is powerful enough, then you can add more services/sub-channels/components
-
-### Encoders
-1. Start job **10-EncoderManager** from the Supervisor web access
-1. Point your web browser to the **Encoder Manager web interface**  on [RaspberryPi](http://raspberrypi.local:8003) or on [Virtual host](http://localhost:8003) (default user profile **odr** and password **odr**) to manage your audio streams and related PAD. 
-1. You can use the excellent [radio browser directory](https://www.radio-browser.info) to identify the url of the radio audio stream
-1. Test the radio audio stream url with vlc on your computer (not the raspberry) and check the bit rate
+---
 
 ### Multiplex
-1. Open file $HOME/dab/conf.mux and decide wich service you want to modify (srv-01 or srv-02) and change all parameters (id, ecc, label, shortlabel, pty, language) accordingly. I recommend you use the values mentionned in the [official ETSI TS 101 756 document](https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/02.02.01_60/ts_101756v020201p.pdf). 
-1. If you added more channels, then make sure that the new sub-channels match the new encoders you added previously
+#### Change the name of the ensemble
+Edit `$HOME/dab/conf.mux` and change `label` and `shortlabel` in the `ensemble` block to rename the Micro DAB.
 
+#### View & edit parameters
+1. Start the **Multiplex Manager** (Supervisor job: `21-Multiplex-Manager`).  
+2. Open `http://raspberrypi.local:8002` (or `http://<host-ip>:8002`) to edit multiplex settings.
+
+---
+
+### Encoders (audio & PAD)
+#### Adding services
+- Start `10-EncoderManager` (Supervisor job).
+- Open `http://raspberrypi.local:8003` to manage audio streams and PAD entries.
+- Use a radio stream URL (e.g. from Radio Browser) and test it locally with VLC before adding it to the encoder config.
+
+#### Editing services
+Open `$HOME/dab/conf.mux` and edit the service blocks (`srv-01`, `srv-02`, etc.). Update:
+- `id`, `ecc`
+- `label`, `shortlabel`
+- `pty`, `language`
+
+Follow ETSI TS 101 756 for service metadata values.
+
+---
+
+## Troubleshooting & tips
+- **Installer seems to hang / errors**: re-run the installer to capture errors or inspect the last lines in the terminal. Check `dmesg`, `journalctl`, and Supervisor logs.
+- **SDR device not found in VM**: ensure you added a VirtualBox USB filter and USB device is claimed by the VM (plug/unplug after adding filter).
+- **High CPU usage**: reduce `rate` in `mod.ini`, disable FIR filter, or move to a more powerful host (Pi 4 or a small x86 VM).
+- **Audio stream fails**: test the stream URL in VLC on your desktop before adding it to the encoders.
+- **Permissions**: many operations require `sudo` — if in doubt, run commands with `sudo`.
+
+---
+
+## Acknowledgements & references
+- odr-mmbTools / Open Digital Radio: https://www.opendigitalradio.org/mmbtools  
+- SoapySDR project: https://github.com/pothosware/SoapySDR/wiki  
+- Raspberry Pi: https://www.raspberrypi.com/  
+- ETSI TS 101 756 (DAB metadata guidelines): https://www.etsi.org/deliver/etsi_ts/101700_101799/101756/
+
+---
+
+**Change log**
+- Repository and credits updated to **StefCoders**.
+- Document restructured and cleaned for clarity.
+- Commands fixed and clarified; removed duplicated sections.
+
+originally by collise
