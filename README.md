@@ -56,12 +56,12 @@ bash rpi-dab-tx/install.sh
 
 ![Raspberry Pi logo](https://www.raspberrypi.com/app/uploads/2022/02/COLOUR-Raspberry-Pi-Symbol-Registered.png)
 
-- **Raspberry Pi 1** — ❌ Too slow (untested)  
-- **Raspberry Pi 2** — ❓ Likely slow (untested)  
+- **Raspberry Pi 1** — ❌ Too slow 
+- **Raspberry Pi 2** — ❓ Slow, untested
 - **Raspberry Pi 3** — ✅ Works (tested). Up to ~4 streams, more may crash under heavy load.  
 - **Raspberry Pi 4** — ✅ Recommended for best performance.  
-- **Raspberry Pi 5** — ❓ Untested (but likely faster).  
-- **Raspberry Pi Zero / Zero W / 2W** — ❌ Not recommended (untested).
+- **Raspberry Pi 5** — ✅ Recommended
+- **Raspberry Pi Zero / Zero W / 2W** — ❌ Not recommended (slow, no ports).
 
 This project:
 - Uses **odr-mmbtools** (Open Digital Radio)
