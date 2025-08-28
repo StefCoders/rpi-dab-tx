@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# install.sh - Install the software stack
+# install.sh - Install the software stack (system-safe version)
 # Copyright (C) 2023 StefCodes (stefcodes.co.uk)
 #
 # Licensed under the GNU General Public License v3.0 or later.
@@ -9,7 +9,6 @@
 
 set -euo pipefail
 
-# Prompt user confirmation
 read -p "Are you sure? This will take 1+ hours! (Y/N): " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -19,14 +18,12 @@ fi
 
 echo "Starting installation..."
 
-# Variables
 HOME_DIR="${HOME}"
 TOOLS_DIR="${HOME_DIR}/ODR-mmbTools"
 CONFIG_DIR="${HOME_DIR}/dab"
 SUPERVISOR_CONF="/etc/supervisor/supervisord.conf"
 SUPERVISOR_PORT=8001
 
-# Helper function for error checking
 check_error() {
   if [[ $? -ne 0 ]]; then
     echo "Error encountered during $1. Exiting."
@@ -34,45 +31,28 @@ check_error() {
   fi
 }
 
-# Detect OS
 OS_NAME=$(lsb_release -is 2>/dev/null || echo "Unknown")
 OS_VER=$(lsb_release -rs 2>/dev/null || echo "0")
-
 echo "Detected OS: $OS_NAME $OS_VER"
 
-# Update system and install essential tools
 echo "Updating system and installing essential tools..."
 sudo apt-get update && sudo apt-get upgrade -y
 check_error "system update/upgrade"
 
 sudo apt-get install -y build-essential automake autoconf libtool python3-pip \
-  libzmq3-dev libzmq5 libvlc-dev vlc-data vlc-plugin-base libcurl4-openssl-dev pkg-config git
+  libzmq3-dev libzmq5 libvlc-dev vlc-data vlc-plugin-base libcurl4-openssl-dev pkg-config git \
+  python3-serial python3-yaml python3-jinja2
 check_error "essential tools installation"
 
-# Install Python dependencies
-echo "Installing Python packages..."
+# Skip unavailable packages (Debian 12+)
+echo "Skipping unavailable packages python3-cherrypy and python3-pysnmp (system-safe mode)"
+echo "Python packages installed: pyserial, PyYAML, Jinja2"
 
-# First, use APT for packaged Python modules (safer than pip)
-sudo apt-get install -y python3-cherrypy python3-jinja2 python3-serial python3-yaml python3-pysnmp
-check_error "Python dependencies via APT"
-
-# Use pip only if we need a specific version (PyYAML 5.4.1)
-PIP_OPTS=""
-if python3 -m pip --help | grep -q -- "--break-system-packages"; then
-  PIP_OPTS="--break-system-packages"
-fi
-
-python3 -m pip install --user $PIP_OPTS pyyaml==5.4.1
-check_error "pip-only packages installation"
-
-# Create tools directory
-echo "Creating tools directory at $TOOLS_DIR..."
 mkdir -p "${TOOLS_DIR}"
 check_error "tools directory creation"
 
 pushd "${TOOLS_DIR}" > /dev/null
 
-# Function to install a Git repository
 install_git_repo() {
   local repo_url=$1
   local folder_name=$2
@@ -99,36 +79,22 @@ install_git_repo() {
   popd > /dev/null
 }
 
-# Install mmb-tools
-echo "Installing mmb-tools: Audio Encoder..."
+# Install ODR tools
 install_git_repo "https://github.com/Opendigitalradio/ODR-AudioEnc.git" "ODR-AudioEnc" "--enable-vlc"
-
-echo "Installing mmb-tools: PAD Encoder..."
 install_git_repo "https://github.com/Opendigitalradio/ODR-PadEnc.git" "ODR-PadEnc"
-
-echo "Installing mmb-tools: DAB Multiplexer..."
 install_git_repo "https://github.com/Opendigitalradio/ODR-DabMux.git" "ODR-DabMux"
-
-echo "Installing mmb-tools: Modulator..."
 install_git_repo "https://github.com/Opendigitalradio/ODR-DabMod.git" "ODR-DabMod" \
   "CFLAGS='-O3 -DNDEBUG' CXXFLAGS='-O3 -DNDEBUG' --enable-fast-math --disable-output-uhd --disable-zeromq"
-
-echo "Installing mmb-tools: fdk-aac..."
 install_git_repo "https://github.com/Opendigitalradio/fdk-aac.git" "fdk-aac"
-
-echo "Installing mmb-tools: Source Companion..."
 install_git_repo "https://github.com/Opendigitalradio/ODR-SourceCompanion.git" "ODR-SourceCompanion"
 
-# Add user to necessary groups
-echo "Configuring user groups..."
+echo "Adding user to necessary groups..."
 sudo usermod --append --group dialout "$(id --user --name)"
 sudo usermod --append --group audio "$(id --user --name)"
 
-# Setup supervisor and configurations
-echo "Setting up Supervisor..."
-# Handle package name differences
-sudo apt-get install -y supervisor python3-cherrypy python3-jinja2 python3-serial python3-yaml python3-pysnmp
-check_error "Supervisor and dependencies installation"
+echo "Installing Supervisor..."
+sudo apt-get install -y supervisor
+check_error "Supervisor installation"
 
 if ! grep -q "inet_http_server" "$SUPERVISOR_CONF"; then
   echo "Configuring Supervisor HTTP server..."
@@ -145,7 +111,8 @@ sudo ln -sf "${CONFIG_DIR}/supervisor/"*.conf /etc/supervisor/conf.d/
 sudo supervisorctl reread
 sudo supervisorctl reload
 
-popd > /dev/null # Back to original directory
+popd > /dev/null
 
 echo "Installation complete. Script by StefCodes."
 echo "Access Supervisor Web UI at: http://localhost:${SUPERVISOR_PORT}"
+echo "Note: python3-cherrypy and python3-pysnmp are skipped on this system."
