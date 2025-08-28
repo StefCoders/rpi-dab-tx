@@ -59,22 +59,32 @@ install_git_repo() {
   local config_flags=${3:-}
 
   if [[ ! -d $folder_name ]]; then
-    git clone $repo_url $folder_name
+    git clone "$repo_url" "$folder_name"
     check_error "cloning $folder_name"
   fi
 
-  pushd $folder_name > /dev/null
-  ./bootstrap
-  check_error "bootstrap in $folder_name"
+  pushd "$folder_name" > /dev/null
 
-  ./configure $config_flags
-  check_error "configure in $folder_name"
+  # Only run bootstrap if it exists
+  if [[ -f ./bootstrap ]]; then
+    ./bootstrap
+    check_error "bootstrap in $folder_name"
+  fi
 
-  make
-  check_error "make in $folder_name"
+  # Only run configure if it exists
+  if [[ -f ./configure ]]; then
+    ./configure $config_flags
+    check_error "configure in $folder_name"
+  fi
 
-  sudo make install
-  check_error "make install in $folder_name"
+  # Build with make if Makefile exists
+  if [[ -f Makefile ]]; then
+    make
+    check_error "make in $folder_name"
+
+    sudo make install
+    check_error "make install in $folder_name"
+  fi
 
   popd > /dev/null
 }
