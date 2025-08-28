@@ -49,15 +49,21 @@ sudo apt-get install -y build-essential automake autoconf libtool python3-pip \
   libzmq3-dev libzmq5 libvlc-dev vlc-data vlc-plugin-base libcurl4-openssl-dev pkg-config git
 check_error "essential tools installation"
 
-# Install Python packages with safe pip options
+# Install Python dependencies
 echo "Installing Python packages..."
+
+# First, use APT for packaged Python modules (safer than pip)
+sudo apt-get install -y python3-cherrypy python3-jinja2 python3-serial python3-yaml python3-pysnmp
+check_error "Python dependencies via APT"
+
+# Use pip only if we need a specific version (PyYAML 5.4.1)
 PIP_OPTS=""
 if python3 -m pip --help | grep -q -- "--break-system-packages"; then
   PIP_OPTS="--break-system-packages"
 fi
 
-sudo python3 -m pip install $PIP_OPTS cherrypy jinja2 pysnmp pyyaml==5.4.1
-check_error "pip packages installation"
+python3 -m pip install --user $PIP_OPTS pyyaml==5.4.1
+check_error "pip-only packages installation"
 
 # Create tools directory
 echo "Creating tools directory at $TOOLS_DIR..."
